@@ -5,12 +5,12 @@
 #include <cstring>
 using namespace std;
 int xo=0;
+int maxBullet = 3;
 int range=5;
 int kill=0;
 int tir=3;
 int kheshab=0;
 int health=3 ;
-int vaccine=0;
 int credit=0;
 int game_round=0;
 int final_level=3;
@@ -86,6 +86,9 @@ void shot(char);
 void zombi_Movment();
 void death();
 void check_bullet(char);
+void upgrade(char);
+void reload(char);
+void levelFinish();
 
 
 int main() {
@@ -111,14 +114,20 @@ int main() {
 
 	while(true) {
 		cin >> order;
+		game_round++;
 		zombieMoveCounter++;
 		player_function(order[0]);
 		check_bullet(order[0]);
+		reload(order[0]);
+		upgrade(order[0]);
+		levelFinish();
+		if (order[0] == 'e' or order[0] == 'E')
+			main_menu();
 		if (zombieMoveCounter % 2 ==0)
 			zombi_Movment();
 		death();
-	system("cls");
-	print_play_ground();
+		system("cls");
+		print_play_ground();
 	}
 
 }
@@ -211,6 +220,9 @@ void main_menu() {
 }
 
 void start() {
+	for (int i = 1; i<14; i++)
+		for (int j=1; j<14; j++)
+			arr[i][j] = 0;
 	arr[0][0] = 1; arr[14][14]=2; // player num = 1 or 6, destination num = 2
 	for (int index = 0; index<final_level; index++) { //select zambie location
 		int i = rand()%12+3, j = rand()%12+3;
@@ -249,7 +261,7 @@ void print_ammo_status(int num_tir, int num_kheshab) {
 }
 
 void print_play_ground() {
-	cout << "Level: " << final_level << "\tVaccine: " << vaccine << "\tCredit: " << credit << "\tRound: " << game_round << endl;
+	cout << "Level: " << final_level << "\tVaccine: " << vaccineCollected << "\tCredit: " << credit << "\tRound: " << game_round << endl;
 	print_health_status(health);
 	print_ammo_status(tir, kheshab);
 	cout << "Kill: " << kill << endl;
@@ -344,6 +356,10 @@ void player_function(char x)
 		    {
 		    	arr[i+1][j]=1;
 			}
+			else if (arr[i+1][j]==2)
+			{
+				arr[i+1][j]=1;
+			}
 			arr[i][j]--;
 	   }
 	}
@@ -366,6 +382,10 @@ void player_function(char x)
 		    	arr[i][j+1]=6;
 			}
 			else if(arr[i][j+1]==0)
+		    {
+		    	arr[i][j+1]=1;
+			}
+			else if(arr[i][j+1]==2)
 		    {
 		    	arr[i][j+1]=1;
 			}
@@ -536,3 +556,84 @@ void check_bullet(char x)
 		tir++;
 	}
 }
+
+
+void upgrade(char x) {
+	if (x == 'u' or x == 'U') {
+		while (true) {
+			system("cls");
+			cout << "0 - Return to the game" << endl;
+			cout << "1 - Upgrade capacity of magazine: 1 Bullet (max is 7 Bullets, now is " << maxBullet << ") , credit required : " << final_level * maxBullet << endl;
+			cout << "2 - Upgrade range of shotgun : 1 times the size of the person himself (maximum is 10 times, now is " << range << "), credit required : " << final_level + range << endl;
+			cout << "3 - get an additional health (maximum is 5 healths, now is " << health << "), credit required: " << (final_level + 1) * health << endl;
+			char ch;
+			cin >> ch;
+			if (ch == '0' or ch == '1' or ch == '2' or ch == '3') {
+				system("cls");
+				if (ch == '0')
+					return;
+				
+				else if (ch == '1') {
+					if (maxBullet == 7) 
+						cout << endl << "The selected item is maximum.";
+					else if (credit < maxBullet * final_level) 
+						cout << endl << "Unfortunately, your credit is not enough to get this item. Please gain " << maxBullet * final_level - credit <<" more credit by playing.";
+					else {
+						credit -= maxBullet * final_level; maxBullet ++;
+						cout  << endl << "Upgrade done successfully." << endl << "Your magazine capacity is now " << maxBullet << " .";
+					}
+				}
+				
+				else if (ch == '2') {
+					if (range == 10)
+						cout << endl << "The selected item is maximum.";
+					else if (credit < range + final_level)
+						cout << endl << "Unfortunately, your credit is not enough to get this item. Please gain " << range + final_level - credit << " more credit by playing.";
+					else {
+						credit -= range + final_level; range ++;
+						cout << endl << "Upgrade done successfully.Your shotgun range is now " << range << " .";
+					}
+				}
+
+				else if (ch == '3') {
+					if (health == 5) 
+						cout << "The selected item is maximum.";
+					else if (credit < (final_level + 1) * health)
+						cout << "Unfortunately, your credit is not enough to get this item. Please gain " << (final_level+1) * health - credit << " more credit by playing.";
+					else {
+						credit -= (final_level+1) * health ; health++;
+						cout << "Additional health received successfully.Your health is now " << health << " .";
+					}
+				}
+				
+			}
+		}
+	}
+}
+
+void reload(char x) {
+	if (x == 'r' or x == 'R') {
+		game_round--;
+		system("cls");
+		if (kheshab == 0) 
+			cout << "No Ammo!";
+		else if (tir == maxBullet)
+			cout << "The gun is already Charged";
+		else {
+			tir++; kheshab--;
+			cout << "Reloaded!";
+		}
+	}
+}
+
+void levelFinish() {
+	if (arr[14][14] == 1) {
+		if (vaccineCollected == final_level) {
+			credit += final_level + 1;
+			final_level++;
+			vaccineCollected = 0;
+			start();
+		}
+	}
+}
+
