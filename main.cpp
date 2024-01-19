@@ -4,6 +4,8 @@
 #include <time.h>
 #include <cstring>
 using namespace std;
+int xo=0;
+int range=5;
 int kill=0;
 int tir=3;
 int kheshab=0;
@@ -11,7 +13,7 @@ int health=3 ;
 int vaccine=0;
 int credit=0;
 int game_round=0;
-int final_level=4;
+int final_level=3;
 int vaccineCollected = 0;
 char order[1];
 int arr[15][15] = {0}; 
@@ -79,7 +81,11 @@ void start();
 void print_health_status();
 void print_ammo_status();
 void print_play_ground();
-
+void player_function(char);
+void shot(char);
+void zombi_Movment();
+void death();
+void check_bullet(char);
 
 
 int main() {
@@ -103,15 +109,17 @@ int main() {
 	start();
 	print_play_ground();
 
-	/*while(true) {
+	while(true) {
 		cin >> order;
 		zombieMoveCounter++;
-		shot(order[0]);
 		player_function(order[0]);
+		check_bullet(order[0]);
 		if (zombieMoveCounter % 2 ==0)
-			zombi_movment();
+			zombi_Movment();
 		death();
-	}*/
+	system("cls");
+	print_play_ground();
+	}
 
 }
 
@@ -167,7 +175,7 @@ void main_menu() {
 			yellow();
 			cout << "Amirreza Samari kalaj\nMohammadhossein Paakdaman\nMohammadmahdi Sharifi pour\n";
 			reset_color();
-			//sleep(2);
+			Sleep(2000);
 			system("cls");
 			return main_menu();
 			break;
@@ -203,12 +211,11 @@ void main_menu() {
 }
 
 void start() {
-	arr[0][0] = 1; arr[14][14]=2; // player num = 1, destination num = 2
+	arr[0][0] = 1; arr[14][14]=2; // player num = 1 or 6, destination num = 2
 	for (int index = 0; index<final_level; index++) { //select zambie location
 		int i = rand()%12+3, j = rand()%12+3;
-		cout << i << j;
 		if (arr[i][j] == 0)
-			arr[i][j] = 3; //zambie num = 3
+			arr[i][j] = 5; //zambie num = 5
 		else
 			index--;
 	}
@@ -222,7 +229,7 @@ void start() {
 	for (int index = 0 ; index<(final_level+1)/2; index++) {
 		int i = rand()%15, j = rand()%15;
 		if (arr[i][j] == 0)
-			arr[i][j] = 5; //ammo num = 5
+			arr[i][j] = 3; //ammo num = 3
 		else 
 			index--;
 	}
@@ -253,7 +260,7 @@ void print_play_ground() {
 		for (int j = 2; j <= 16; j++) {
 			if (arr[i-1][j-2]==0)
 				cout << " ";
-			if (arr[i-1][j-2]==1) {
+			if (arr[i-1][j-2]==1||arr[i-1][j-2]==6) {
 				green();
 				cout << "P";
 			}
@@ -261,7 +268,7 @@ void print_play_ground() {
 				cyan();
 				cout << "D";
 			}
-			if (arr[i-1][j-2]==3){
+			if (arr[i-1][j-2]==5||arr[i-1][j-2]>6){
 				magenta();
 				cout << "z";
 			}	
@@ -269,7 +276,7 @@ void print_play_ground() {
 				yellow();
 				cout << "V";
 			}
-			if (arr[i-1][j-2]==5){
+			if (arr[i-1][j-2]==3){
 				blue_bold();
 				cout << "A";
 			}
@@ -279,4 +286,253 @@ void print_play_ground() {
 		cout << "|" << endl;
 	}
 	cout << "-----------------" << endl;
+}
+void player_function(char x)
+{
+	int i,j;
+	for(int s=0;s<15;s++)
+		   for(int z=0;z<15;z++)
+		   	if(arr[s][z]==1||arr[s][z]==6)
+		   	{
+		   		i=s;
+		   		j=z;
+			}
+	if(x=='w'||x=='W')
+	{
+		if(i-1>-1)
+		{
+	     	if(arr[i-1][j]==4)
+		    {
+			   vaccineCollected++;
+			   arr[i-1][j]=1;
+		    }
+		    else if(arr[i-1][j]==3)
+		    {
+			   kheshab++;
+			   arr[i-1][j]=1;
+	     	}
+		    else if(arr[i-1][j]==5)
+		    {
+		    	arr[i-1][j]=6;
+			}
+			else if(arr[i-1][j]==0)
+		    {
+		    	arr[i-1][j]=1;
+			}
+			arr[i][j]--;
+	   }
+	}
+	else if(x=='s'||x=='S')
+	{
+		if(i+1<15)
+		{
+		    if(arr[i+1][j]==4)
+		    {
+			   vaccineCollected++;
+			   arr[i+1][j]=1;
+		    }
+		    else if(arr[i+1][j]==3)
+		    {
+			   kheshab++;
+			   arr[i+1][j]=1;
+	     	}
+		    else if(arr[i+1][j]==5)
+		    {
+		    	arr[i+1][j]=6;
+			}
+			else if(arr[i+1][j]==0)
+		    {
+		    	arr[i+1][j]=1;
+			}
+			arr[i][j]--;
+	   }
+	}
+	else if(x=='d'||x=='D')
+	{
+		if(j+1<15)
+		{
+		   if(arr[i][j+1]==4)
+		    {
+			   vaccineCollected++;
+			   arr[i][j+1]=1;
+		    }
+		    else if(arr[i][j+1]==3)
+		    {
+			   kheshab++;
+			   arr[i][j+1]=1;
+	     	}
+		    else if(arr[i][j+1]==5)
+		    {
+		    	arr[i][j+1]=6;
+			}
+			else if(arr[i][j+1]==0)
+		    {
+		    	arr[i][j+1]=1;
+			}
+			arr[i][j]--;
+	    }
+	}
+	else if(x=='a'||x=='A')
+	{
+	   if(j-1>-1)
+	    {
+		   if(arr[i][j-1]==4)
+		    {
+			   vaccineCollected++;
+			   arr[i][j-1]=1;
+		    }
+		    else if(arr[i][j-1]==3)
+		    {
+			   kheshab++;
+			   arr[i][j-1]=1;
+	     	}
+		    else if(arr[i][j-1]==5)
+		    {
+		    	arr[i][j-1]=6;
+			}
+			else if(arr[i][j-1]==0)
+		    {
+		    	arr[i][j-1]=1;
+			}
+			arr[i][j]--;
+		}
+			
+	}
+}
+void shot(char x)
+{
+	for(int i=0;i<15;i++)
+	  for(int j=0;j<15;j++)
+	    if(arr[i][j]==1||arr[i][j]==6)
+	    {
+	    	if(x=='f'||x=='F')
+	    	{
+	    		for(int s=j;s>max(j-range,0);s--)
+	    		   if(arr[i][s]==5||arr[i][s]>6)
+	    		   {
+	    		   	  arr[i][s]=0;
+	    		   	  cout<<"eival";
+	    		   	  credit+=final_level+1;
+	    		   	  kill++;
+	    		   	  break;
+				   }
+			}
+			else if(x=='h'||x=='H')
+	    	{
+	    		for(int s=j;s<min(j+range,15);s++)
+	    		   if(arr[i][s]==5||arr[i][s]>6)
+	    		   {
+	    		   	  arr[i][s]=0;
+	    		   	  cout<<"eival";
+	    		   	  credit+=final_level+1;
+	    		   	  kill++;
+	    		   	  break;
+				   }
+			}
+			else if(x=='t'||x=='T')
+	    	{
+	    		for(int s=i;s>max(0,i-range);s--)
+	    		   if(arr[s][j]==5||arr[s][j]>6)
+	    		   {
+	    		   	  arr[s][j]=0;
+	    		   	  cout<<"eival";
+	    		   	  credit+=final_level+1;
+	    		   	  kill++;
+	    		   	  break;
+				   }
+			}
+			else if(x=='g'||x=='G')
+	    	{
+	    		for(int s=i;s<min(15,i+range);s++)
+	    		   if(arr[s][j]==5||arr[s][j]>6)
+	    		   {
+	    		   	  arr[s][j]=0;
+	    		   	  cout<<"eival";
+	    		   	  credit+=final_level+1;
+	    		   	  kill++;
+	    		   	  break;
+				   }
+			}
+		}
+}
+void zombi_Movment()
+{
+		int i,j,x;
+	for(int s=0;s<15;s++)
+	   for(int z=0;z<15;z++)
+		   	if(arr[s][z]==1||arr[s][z]==6)
+		   	{
+		   		i=s;
+		   		j=z;
+			}
+	for(int g=0;g<15;g++)
+	   for(int u=0;u<15;u++)
+	     if(arr[g][u]==5||arr[g][u]>6)
+		 {
+		    if(g!=i||u!=j)
+		    {
+		 	if(u<j)
+			{
+				x=arr[g][u+1];
+				arr[g][u+1]=-arr[g][u+1]-5;
+			}
+			else if(u>j)
+			{
+				x=arr[g][u-1];
+				arr[g][u-1]=-arr[g][u-1]-5;
+			}	
+		 	else if(u==j)
+		 	{
+		 		if(g<i)
+		 	    {
+		 	      x=arr[g+1][u];
+		 	      arr[g+1][u]=-arr[g+1][u]-5;
+			    }
+		 	    else if(g>i)
+		 	    {
+		 	     x=arr[g-1][u];
+			     arr[g-1][u]=-arr[g-1][u]-5;
+			    }
+			}
+			arr[g][u]-=5;
+		   }
+		 /* else
+	       {
+	    	arr[g][u]=6;
+		   }*/
+	    }
+	for(int c=0;c<15;c++)
+	   for(int d=0;d<15;d++)
+	     if(arr[c][d]==-5||arr[c][d]==-8||arr[c][d]==-9||arr[c][d]==-6||arr[c][d]==-10)
+	     {   
+	         xo=arr[c][d];
+	     	 arr[c][d]=abs(xo);
+		 }	
+}
+void death()
+{
+	for(int i=0;i<15;i++)
+	  for(int j=0;j<15;j++)
+	    if(arr[i][j]==1||arr[i][j]==6)
+	    {
+        	for(int s=max(0,i-1);s<min(i+2,15);s++)
+	          for(int z=max(j-1,0);z<min(j+2,15);z++)
+	            if(arr[s][z]==5||arr[s][z]>6)
+	              {
+	     	        health--;
+		          }
+	    }
+}
+void check_bullet(char x)
+{
+	if(x=='f'||x=='F'||x=='g'||x=='G'||x=='h'||x=='H'||x=='t'||x=='T')
+	{
+		if(tir>0)
+		shot(order[0]);
+		else if(tir==0)
+		cout<<"No charged ammo!";
+		tir--;
+		if(tir==-1)
+		tir++;
+	}
 }
