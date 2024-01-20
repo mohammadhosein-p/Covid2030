@@ -210,9 +210,18 @@ void main_menu() {
 			break;
 
 		case '4': // HELP
-			blue();
-			cout << "HELP\n";
+			yellow();
+			cout << "Welcome to COVID 2030 game\n\n";
+			cyan();
+			cout << "Objective:\nYour job is to collect all of Vaccines(V) and reach to Destination(D) in each level to can save the planet from Zombies\nIn this path Zombies(Z) can damage you so you can use your shotgun and kill them before!\n\n";
+			cout << "Controls:\n- Move Up: W\n- Move Down: S\n- Move Left: A\n- Move Right: D\n- Shooting upwards: T\n- Shooting down: G\n- Shooting to the right: H\n- Shooting to the left: F\n\n";
+			cout << "Scoring:\nYou can collect Credits by killing Zombies or going to next level and use those credits to update yourself.\n\n";  
+			cout << "Levels:\nYou can collect all of the Vaccines and Save the planet in 20 levels.\n\n";
+			cout << "Tips:\nYou can reload your ammo by pressing R.\nYour gun have a range that is by default 5 but you can update it.\nPress U to inter to update menu.\nPress E to exit game.\nPress M to inter to menu.\n\n"; 
+			yellow();
+			cout <<"Have fun playing COVID 2030!\nRemember we counted on you to save the planet.\n\n";
 			reset_color();
+			getchar();
 			return main_menu();
 			break;
 
@@ -222,7 +231,7 @@ void main_menu() {
 			system("cls");
 			if (order[0] == 'y') {
 				cout << "Good Bye!";
-				sleep(2.5);
+				Sleep(2500);
 				exit(0);
 			}
 
@@ -579,7 +588,7 @@ void death() {
 								red();
 								cout << "The zombie is eating you! You lost one of your healths!";
 								reset_color();
-								sleep(2.5);
+								Sleep(2500);
 							} else if ( health == 0) {
 								system("cls");
 								red();
@@ -593,7 +602,7 @@ void death() {
 								} else if (order[0] == 'y') {
 									system("cls");
 									cout << "The game will restart in 5 seconds...";
-									sleep(5);
+									Sleep(5000);
 									final_level = 1;
 									credit = 0 ;
 									game_round = 0;
@@ -622,7 +631,7 @@ void check_bullet(char x) {
 		else if(tir==0){
 			system("cls");
 			cout<<"No charged ammo!";
-			sleep(2.5);
+			Sleep(2500);
 		}
 	}
 }
@@ -645,25 +654,25 @@ void upgrade(char x) {
 
 				else if (ch == '1') {
 					if (maxBullet == 7)
-						cout << endl << "The selected item is maximum.";
+						cout  << "The selected item is maximum.";
 					else if (credit < maxBullet * final_level)
-						cout << endl << "Unfortunately, your credit is not enough to get this item. Please gain " << maxBullet * final_level - credit <<" more credit by playing.";
+						cout << "Unfortunately, your credit is not enough to get this item. Please gain " << maxBullet * final_level - credit <<" more credit by playing.";
 					else {
 						credit -= maxBullet * final_level;
 						maxBullet ++;
-						cout  << endl << "Upgrade done successfully." << endl << "Your magazine capacity is now " << maxBullet << " .";
+						cout << "Upgrade done successfully." << endl << "Your magazine capacity is now " << maxBullet << " .";
 					}
 				}
 
 				else if (ch == '2') {
 					if (range == 10)
-						cout << endl << "The selected item is maximum.";
+						cout  << "The selected item is maximum.";
 					else if (credit < range + final_level)
-						cout << endl << "Unfortunately, your credit is not enough to get this item. Please gain " << range + final_level - credit << " more credit by playing.";
+						cout << "Unfortunately, your credit is not enough to get this item. Please gain " << range + final_level - credit << " more credit by playing.";
 					else {
 						credit -= range + final_level;
 						range ++;
-						cout << endl << "Upgrade done successfully.Your shotgun range is now " << range << " .";
+						cout << "Upgrade done successfully.Your shotgun range is now " << range << " .";
 					}
 				}
 
@@ -678,6 +687,8 @@ void upgrade(char x) {
 						cout << "Additional health received successfully.Your health is now " << health << " .";
 					}
 				}
+				Sleep(3500);
+				
 
 			}
 		}
@@ -688,14 +699,19 @@ void reload(char x) {
 	if (x == 'r' or x == 'R') {
 		game_round--;
 		system("cls");
-		if (kheshab == 0)
+		if (kheshab == 0){
 			cout << "No Ammo!";
-		else if (tir == maxBullet)
+			Sleep(2000);
+		}
+		else if (tir == maxBullet){
 			cout << "The gun is already Charged";
+			Sleep(2500);
+		}
 		else {
 			tir++;
 			kheshab--;
 			cout << "Reloaded!";
+			Sleep(2000);
 		}
 	}
 }
@@ -706,7 +722,7 @@ void levelFinish() {
 			system("cls");
 			green();
 			cout << "Congratulations! You have successfully collected all the vaccines!\nNow it is time to return to the Earth\nGood Bye!";
-			sleep(2.5);
+			Sleep(2500);
 			reset_color();
 			main_menu();
 		} else if (vaccineCollected == final_level) {
@@ -716,14 +732,14 @@ void levelFinish() {
 			game_round=0;
 			green();
 			cout << "You Won! You have reached level " << final_level;
-			sleep(2.5);
+			Sleep(2500);
 			reset_color();
 			start();
 		} else {
 			system("cls");
 			red();
 			cout << "First get all the vaccines.";
-			sleep(2.5);
+			Sleep(2500);
 			reset_color();
 
 		}
