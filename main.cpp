@@ -4,7 +4,7 @@
 #include <time.h>
 #include <cstring>
 using namespace std;
-int xo=0;
+int temp=0;
 int maxBullet = 3;
 int range=5;
 int kill=0;
@@ -316,6 +316,7 @@ void player_function(char x)
 	     	if(arr[i-1][j]==4)
 		    {
 			   vaccineCollected++;
+			   credit += final_level + 1;
 			   arr[i-1][j]=1;
 		    }
 		    else if(arr[i-1][j]==3)
@@ -341,6 +342,7 @@ void player_function(char x)
 		    if(arr[i+1][j]==4)
 		    {
 			   vaccineCollected++;
+			   credit += final_level + 1;
 			   arr[i+1][j]=1;
 		    }
 		    else if(arr[i+1][j]==3)
@@ -370,6 +372,7 @@ void player_function(char x)
 		   if(arr[i][j+1]==4)
 		    {
 			   vaccineCollected++;
+			   credit += final_level + 1;
 			   arr[i][j+1]=1;
 		    }
 		    else if(arr[i][j+1]==3)
@@ -399,6 +402,7 @@ void player_function(char x)
 		   if(arr[i][j-1]==4)
 		    {
 			   vaccineCollected++;
+			   credit += final_level + 1;
 			   arr[i][j-1]=1;
 		    }
 		    else if(arr[i][j-1]==3)
@@ -418,6 +422,8 @@ void player_function(char x)
 		}
 			
 	}
+	if(arr[14][14]==0)
+	arr[14][14]=2;
 }
 void shot(char x)
 {
@@ -428,9 +434,9 @@ void shot(char x)
 	    	if(x=='f'||x=='F')
 	    	{
 	    		for(int s=j;s>max(j-range,0);s--)
-	    		   if(arr[i][s]==5||arr[i][s]>6)
+	    		   if(arr[i][s]==5||arr[i][s]>=6)
 	    		   {
-	    		   	  arr[i][s]=0;
+	    		   	  arr[i][s]-=5;
 	    		   	  cout<<"eival";
 	    		   	  credit+=final_level+1;
 	    		   	  kill++;
@@ -442,7 +448,7 @@ void shot(char x)
 	    		for(int s=j;s<min(j+range,15);s++)
 	    		   if(arr[i][s]==5||arr[i][s]>6)
 	    		   {
-	    		   	  arr[i][s]=0;
+	    		   	  arr[i][s]-=5;
 	    		   	  cout<<"eival";
 	    		   	  credit+=final_level+1;
 	    		   	  kill++;
@@ -454,7 +460,7 @@ void shot(char x)
 	    		for(int s=i;s>max(0,i-range);s--)
 	    		   if(arr[s][j]==5||arr[s][j]>6)
 	    		   {
-	    		   	  arr[s][j]=0;
+	    		   	  arr[s][j]-=5;
 	    		   	  cout<<"eival";
 	    		   	  credit+=final_level+1;
 	    		   	  kill++;
@@ -466,7 +472,7 @@ void shot(char x)
 	    		for(int s=i;s<min(15,i+range);s++)
 	    		   if(arr[s][j]==5||arr[s][j]>6)
 	    		   {
-	    		   	  arr[s][j]=0;
+	    		   	  arr[s][j]-=5;
 	    		   	  cout<<"eival";
 	    		   	  credit+=final_level+1;
 	    		   	  kill++;
@@ -525,8 +531,8 @@ void zombi_Movment()
 	   for(int d=0;d<15;d++)
 	     if(arr[c][d]==-5||arr[c][d]==-8||arr[c][d]==-9||arr[c][d]==-6||arr[c][d]==-10)
 	     {   
-	         xo=arr[c][d];
-	     	 arr[c][d]=abs(xo);
+	         temp=arr[c][d];
+	     	 arr[c][d]=abs(temp);
 		 }	
 }
 void death()
@@ -629,11 +635,10 @@ void reload(char x) {
 void levelFinish() {
 	if (arr[14][14] == 1) {
 		if (vaccineCollected == final_level) {
-			credit += final_level + 1;
 			final_level++;
 			vaccineCollected = 0;
+			game_round=0;
 			start();
 		}
 	}
 }
-
