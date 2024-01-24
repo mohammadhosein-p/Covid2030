@@ -616,14 +616,14 @@ void death() {
 				for(int s=max(0,i-1); s<min(i+2,15); s++)
 					for(int z=max(j-1,0); z<min(j+2,15); z++)
 						if(arr[s][z]==5||arr[s][z]==6) {
-							health--;
-							if (health > 0) {
+						//	health--;
+						/*	if (health > 0) {
 								system("cls");
 								red();
 								cout << "The zombie is eating you! You lost one of your healths!";
 								reset_color();
 								Sleep(2500);
-							} else if ( health == 0) {
+							} else*/ if ( health == 0) {
 								system("cls");
 								red();
 								cout << "You Died!\n";
