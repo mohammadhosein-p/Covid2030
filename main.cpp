@@ -6,6 +6,8 @@
 using namespace std;
 int temp=0;
 int maxBullet = 3;
+int kill_counter=0;
+int Zombi_print=0;
 int range=5;
 int kill=0;
 int tir=3;
@@ -124,6 +126,7 @@ int main() {
 		levelFinish();
 		zombi_Movment();
 		death();
+		Accident();
 		if (order[0] == 'e' or order[0] == 'E') {
 			system("cls");
 			main_menu();
@@ -133,7 +136,7 @@ int main() {
 			system("cls");
 			ingame_menu();
 		}
-		Accident();
+        system("cls");
 		print_play_ground();
 	}
 
@@ -330,7 +333,10 @@ void ingame_menu() {
 void start() {
 	for (int i = 0; i<=14; i++)
 		for (int j=0; j<=14; j++)
+		{
 			arr[i][j] = 0;
+			back_up[i][j] = 0;
+		}
 	arr[0][0] = 1;
 	arr[14][14]=2; // player num = 1 or 6, destination num = 2
 	for (int index = 0; index<final_level; index++) { //select zambie location
@@ -428,9 +434,15 @@ void player_function(char x) {
 				credit += final_level + 1;
 				arr[i-1][j]=1;
 				back_up[i-1][j]=0;
+				system("cls");
+				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+		    	Sleep(1000);
 			} else if(arr[i-1][j]==3) {
-				kheshab++;
+				kheshab+=3;
 				arr[i-1][j]=1;
+				system("cls");
+				cout << "Ammo colleected!";
+		    	Sleep(1000);
 				back_up[i-1][j]=0;
 			} else if(arr[i-1][j]==5) {
 				arr[i-1][j]=6;
@@ -446,10 +458,16 @@ void player_function(char x) {
 				credit += final_level + 1;
 				arr[i+1][j]=1;
 				back_up[i+1][j]=0;
+				system("cls");
+				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+		    	Sleep(1000);
 			} else if(arr[i+1][j]==3) {
-				kheshab++;
+				kheshab+=3;
 				arr[i+1][j]=1;
 				back_up[i+1][j]=0;
+				system("cls");
+				cout << "Ammo colleected!";
+		    	Sleep(1000);
 			} else if(arr[i+1][j]==5) {
 				arr[i+1][j]=6;
 			} else if(arr[i+1][j]==0) {
@@ -466,10 +484,16 @@ void player_function(char x) {
 				credit += final_level + 1;
 				arr[i][j+1]=1;
 				back_up[i][j+1]=0;
+				system("cls");
+				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+		    	Sleep(1000);
 			} else if(arr[i][j+1]==3) {
-				kheshab++;
+				kheshab+=3;
 				arr[i][j+1]=1;
 				back_up[i][j+1]=0;
+				system("cls");
+				cout << "Ammo colleected!";
+		    	Sleep(1000);
 			} else if(arr[i][j+1]==5) {
 				arr[i][j+1]=6;
 			} else if(arr[i][j+1]==0) {
@@ -486,10 +510,16 @@ void player_function(char x) {
 				credit += final_level + 1;
 				arr[i][j-1]=1;
 				back_up[i][j-1]=0;
+				system("cls");
+				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+		    	Sleep(1000);
 			} else if(arr[i][j-1]==3) {
-				kheshab++;
+				kheshab+=3;
 				arr[i][j-1]=1;
 				back_up[i][j-1]=0;
+				system("cls");
+				cout << "Ammo colleected!";
+		    	Sleep(1000);
 			} else if(arr[i][j-1]==5) {
 				arr[i][j-1]=6;
 			} else if(arr[i][j-1]==0) {
@@ -503,14 +533,15 @@ void player_function(char x) {
 		arr[14][14]=2;
 }
 void shot(char x) {
+	kill_counter=0;
 	for(int i=0; i<15; i++)
 		for(int j=0; j<15; j++)
 			if(arr[i][j]==1||arr[i][j]==6) {
 				if(x=='f'||x=='F') {
 					for(int s=j; s>max(j-range,0); s--)
 						if(arr[i][s]==5) {
+							kill_counter++;
 							arr[i][s]-=5;
-							cout<<"eival";
 							credit+=final_level+1;
 							kill++;
 							break;
@@ -518,8 +549,8 @@ void shot(char x) {
 				} else if(x=='h'||x=='H') {
 					for(int s=j; s<min(j+range,15); s++)
 						if(arr[i][s]==5) {
+							kill_counter++;
 							arr[i][s]-=5;
-							cout<<"eival";
 							credit+=final_level+1;
 							kill++;
 							break;
@@ -527,8 +558,8 @@ void shot(char x) {
 				} else if(x=='t'||x=='T') {
 					for(int s=i; s>max(0,i-range); s--)
 						if(arr[s][j]==5) {
+							kill_counter++;
 							arr[s][j]-=5;
-							cout<<"eival";
 							credit+=final_level+1;
 							kill++;
 							break;
@@ -536,13 +567,57 @@ void shot(char x) {
 				} else if(x=='g'||x=='G') {
 					for(int s=i; s<min(15,i+range); s++)
 						if(arr[s][j]==5) {
+							kill_counter++;
 							arr[s][j]-=5;
-							cout<<"eival";
 							credit+=final_level+1;
 							kill++;
 							break;
 						}
 				}
+			}
+			if(kill_counter==0)
+			{
+				system("cls");
+				cout << "Zombi is not in range! come closer";
+		    	Sleep(1000);
+			}
+			else
+			{
+			  system("cls");
+			  cyan();	
+			  Zombi_print=kill%14-1;
+			  if(Zombi_print==0)
+			     cout<<"First Blood";
+			  else if(Zombi_print==1)
+			     cout<<"Double Kill";
+			  else if(Zombi_print==2&&final_level%2==1)
+			     cout<<"Hattrick";
+			  else if(Zombi_print==2&&final_level%2==0)
+			     cout<<"Triple Kill";
+			  else if(Zombi_print==3)
+			     cout<<"Team killer";
+			  else if(Zombi_print==4)
+			     cout<<"Headshot";
+			  else if(Zombi_print==5)
+			     cout<<"Rampage";
+			  else if(Zombi_print==6)
+			     cout<<"Killing Spree";
+			  else if(Zombi_print==7)
+			     cout<<"Unstoppable";
+			  else if(Zombi_print==8)
+			     cout<<"Monster Kill";
+			  else if(Zombi_print==9)
+			     cout<<"Muiti Kill";
+			  else if(Zombi_print==10)
+			     cout<<"Ludicrous Kill";
+			  else if(Zombi_print==11)
+			     cout<<"Uitra Kill";
+			  else if(Zombi_print==12)
+			     cout<<"Dominating";
+			  else if(Zombi_print==13)
+			     cout<<"Godlike";
+			  Sleep(1000);
+			  reset_color();
 			}
 }
 void zombi_Movment()
@@ -616,14 +691,14 @@ void death() {
 				for(int s=max(0,i-1); s<min(i+2,15); s++)
 					for(int z=max(j-1,0); z<min(j+2,15); z++)
 						if(arr[s][z]==5||arr[s][z]==6) {
-						//	health--;
-						/*	if (health > 0) {
+							health--;
+							if (health > 0) {
 								system("cls");
 								red();
 								cout << "The zombie is eating you! You lost one of your healths!";
 								reset_color();
 								Sleep(2500);
-							} else*/ if ( health == 0) {
+							} else if ( health == 0) {
 								system("cls");
 								red();
 								cout << "You Died!\n";
@@ -665,7 +740,7 @@ void check_bullet(char x) {
 		else if(tir==0){
 			system("cls");
 			cout<<"No charged ammo!";
-			Sleep(2500);
+			Sleep(1500);
 		}
 	}
 }
@@ -735,23 +810,25 @@ void reload(char x) {
 		system("cls");
 		if (kheshab == 0){
 			cout << "No Ammo!";
-			Sleep(2000);
+			Sleep(1000);
 		}
 		else if (tir == maxBullet){
 			cout << "The gun is already Charged";
-			Sleep(2500);
+			Sleep(1000);
 		}
 		else {
 			tir++;
 			kheshab--;
 			cout << "Reloaded!";
-			Sleep(2000);
+			Sleep(1000);
 		}
 	}
 }
 
 void levelFinish() {
 	if (arr[14][14] == 1) {
+		kill=0;
+		game_round=0;
 		if (vaccineCollected == final_level && final_level == 20) {
 			system("cls");
 			green();
@@ -791,5 +868,4 @@ void Accident()
 	   {
 	   	arr[i][j]=back_up[i][j];
 	   }
-	   system("cls");
 }
