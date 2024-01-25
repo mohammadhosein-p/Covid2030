@@ -15,6 +15,7 @@ int kheshab=0;
 int health=3 ;
 int credit=0;
 int game_round=0;
+int level_finish = 15;
 int final_level=1;
 int vaccineCollected = 0;
 int zombieMoveCounter = 0;
@@ -40,6 +41,7 @@ void green() {
 }
 void red() {
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED);
+
 }
 void yellow() {
 	SetConsoleTextAttribute(hConsole, FOREGROUND_RED | FOREGROUND_GREEN);
@@ -99,14 +101,13 @@ void Accident();
 
 int main() {
 	srand(time(0));
-
 	red();
 	cout << " ######   #######  ##     ## #### ########      #######    #####     #######    #####\n";
 	cout << "##    ## ##     ## ##     ##  ##  ##     ##    ##     ##  ##    ##  ##     ##  ##    ##\n";
 	cout << "##       ##     ## ##     ##  ##  ##     ##           ## ##      ##        ## ##      ##\n";
-	cout << "##       ##     ## ##     ##  ##  ##     ##     #######  ##      ##  #######  ##      ## \n";
-	cout << "##       ##     ##  ##    ##  ##  ##     ##    ##        ##      ##        ## ##      ##    \n";
-	cout << "##    ## ##     ##   ##  ##   ##  ##     ##    ##         ##    ##  ##     ##  ##    ##  \n";
+	cout << "##       ##     ## ##     ##  ##  ##     ##     #######  ##      ##  #######  ##      ##\n";
+	cout << "##       ##     ##  ##    ##  ##  ##     ##    ##        ##      ##        ## ##      ##\n";
+	cout << "##    ## ##     ##   ##  ##   ##  ##     ##    ##         ##    ##  ##     ##  ##    ##\n";
 	cout << " ######   #######     ###    #### ########     ########    #####     #######    #####\n";
 	reset_color();
 
@@ -172,7 +173,11 @@ void main_menu() {
 			break;
 
 		case '2': // SETTINGS
-			cout << "Final level is: " << final_level << endl;
+			cout << "Final level is: " << level_finish << endl;
+			cout << "1 - Sound settings\n2 - Final level settings\n3 - Back to menu\n"; 
+			cin >> order[0];
+			system("cls");
+			if (order[0] == '1'){
 			if (is_sound_on == false) {
 				cout << "Sound is mute!\nDo you want to unmute the sound? (y : YES | n : NO)\n";
 				cin >> order[0];
@@ -198,6 +203,43 @@ void main_menu() {
 					return main_menu();
 				}
 			}
+		}
+		else if (order[0] == '2'){
+			cout << "Choose final level :\n1 - 5 Levels (easy mode)\n2 - 10 Levels (medium mode)\n3 - 15 Levels (hard mode)\n4 - 20 Levels (pro mode)\n";
+			cin >> order[0];
+			system("cls");
+			if (order[0] == '1'){
+			level_finish = 5;
+			cout << "Final level changed to 5\n";
+			Sleep(1500);
+			system("cls");
+			main_menu();
+			}
+			else if (order[0] == '2'){
+			level_finish = 10;
+			cout << "Final level changed to 10\n";
+			Sleep(1500);
+			system("cls");
+			main_menu();
+			}
+			else if (order[0] == '3'){
+			level_finish = 15;
+			cout << "Final level changed to 15\n";
+			Sleep(1500);
+			system("cls");
+			main_menu();
+			}
+			else if (order[0] == '4'){
+			level_finish = 20;
+			cout << "Final level changed to 20\n";
+			Sleep(1500);
+			system("cls");
+			main_menu();
+			}
+			
+		}
+		else if (order[0] == '3')
+		main_menu();
 
 			break;
 
@@ -285,49 +327,60 @@ void ingame_menu() {
 			break;
 
 		case '2':
-			cout << "Final level is: " << final_level << endl;
+
+	cout << "Final level is: " << level_finish << endl;
+			cout << "1 - Sound settings\n2 - Back to menu\n"; 
+			cin >> order[0];
+			system("cls");
+			if (order[0] == '1'){
 			if (is_sound_on == false) {
 				cout << "Sound is mute!\nDo you want to unmute the sound? (y : YES | n : NO)\n";
 				cin >> order[0];
 				system("cls");
 				if (order[0] == 'n') {
-					//	return main_menu();
-					return;
+					return ingame_menu();
 				} else if (order[0] == 'y') {
 					is_sound_on = true;
-					//	return main_menu();
-					return;
+					return ingame_menu();
 				} else {
-					//	return main_menu();
-					return;
+					return ingame_menu();
 				}
 			} else if (is_sound_on == true) {
 				cout << "Sound is not mute!!\nDo you want to mute the sound? (y : YES | n : NO)\n";
 				cin >> order[0];
 				system("cls");
 				if (order[0] == 'n') {
-					//return main_menu();
-					return;
+					return ingame_menu();
 				} else if (order[0] == 'y') {
 					is_sound_on = false;
-					//return main_menu();
-					return;
+					return ingame_menu();
 				} else {
-					//	return main_menu();
-					return;
+					return ingame_menu();
 				}
 			}
+		}
+		else if (order[0] == '2')
+		ingame_menu();
+		else ingame_menu();
 
 			break;
 
 		case '3':
+		cout << "Are you sure you want to exit the current game? (y : YES | n : NO)\n";
+			cin >> order[0];
+			system("cls");
+			if (order[0] == 'y') {
 			main_menu();
+			}
+
+			if (order[0] == 'n') {
+			 ingame_menu();
+			}
 
 			break;
-
-	}
 	return;
 
+}
 }
 
 void start() {
@@ -385,8 +438,8 @@ void print_play_ground() {
 	print_health_status(health);
 	print_ammo_status(tir, kheshab);
 	cout << "Kill: " << kill << endl;
-
 	cout << "-----------------" << endl;
+
 	for (int i = 1; i <= 15; i++) {
 		cout << "|";
 		for (int j = 2; j <= 16; j++) {
@@ -435,13 +488,13 @@ void player_function(char x) {
 				arr[i-1][j]=1;
 				back_up[i-1][j]=0;
 				system("cls");
-				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i-1][j]==3) {
-				kheshab+=3;
+				kheshab+=2;
 				arr[i-1][j]=1;
 				system("cls");
-				cout << "Ammo colleected!";
+				cout << "Ammo collected!";
 		    	Sleep(1000);
 				back_up[i-1][j]=0;
 			} else if(arr[i-1][j]==5) {
@@ -459,14 +512,14 @@ void player_function(char x) {
 				arr[i+1][j]=1;
 				back_up[i+1][j]=0;
 				system("cls");
-				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i+1][j]==3) {
-				kheshab+=3;
+				kheshab+=2;
 				arr[i+1][j]=1;
 				back_up[i+1][j]=0;
 				system("cls");
-				cout << "Ammo colleected!";
+				cout << "Ammo collected!";
 		    	Sleep(1000);
 			} else if(arr[i+1][j]==5) {
 				arr[i+1][j]=6;
@@ -485,14 +538,14 @@ void player_function(char x) {
 				arr[i][j+1]=1;
 				back_up[i][j+1]=0;
 				system("cls");
-				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i][j+1]==3) {
-				kheshab+=3;
+				kheshab+=2;
 				arr[i][j+1]=1;
 				back_up[i][j+1]=0;
 				system("cls");
-				cout << "Ammo colleected!";
+				cout << "Ammo collected!";
 		    	Sleep(1000);
 			} else if(arr[i][j+1]==5) {
 				arr[i][j+1]=6;
@@ -511,14 +564,14 @@ void player_function(char x) {
 				arr[i][j-1]=1;
 				back_up[i][j-1]=0;
 				system("cls");
-				cout << "Vaccine colleected!"<<endl<<final_level + 1<<" credit gained!";
+				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i][j-1]==3) {
-				kheshab+=3;
+				kheshab+=2;
 				arr[i][j-1]=1;
 				back_up[i][j-1]=0;
 				system("cls");
-				cout << "Ammo colleected!";
+				cout << "Ammo collected!";
 		    	Sleep(1000);
 			} else if(arr[i][j-1]==5) {
 				arr[i][j-1]=6;
@@ -578,7 +631,7 @@ void shot(char x) {
 			if(kill_counter==0)
 			{
 				system("cls");
-				cout << "Zombi is not in range! come closer";
+				cout << "Zombie is not in range! come closer";
 		    	Sleep(1000);
 			}
 			else
@@ -616,8 +669,10 @@ void shot(char x) {
 			     cout<<"Dominating";
 			  else if(Zombi_print==13)
 			     cout<<"Godlike";
+			      reset_color();
+			     cout <<endl <<final_level + 1  <<" credit gained!";
 			  Sleep(1000);
-			  reset_color();
+			 
 			}
 }
 void zombi_Movment()
@@ -698,7 +753,7 @@ void death() {
 								cout << "The zombie is eating you! You lost one of your healths!";
 								reset_color();
 								Sleep(2500);
-							} else if ( health == 0) {
+							} else if ( health <= 0) {
 								system("cls");
 								red();
 								cout << "You Died!\n";
@@ -829,11 +884,12 @@ void levelFinish() {
 	if (arr[14][14] == 1) {
 		kill=0;
 		game_round=0;
-		if (vaccineCollected == final_level && final_level == 20) {
+		if (vaccineCollected == final_level && final_level == level_finish) {
 			system("cls");
 			green();
-			cout << "Congratulations! You have successfully collected all the vaccines!\nNow it is time to return to the Earth\nGood Bye!";
-			Sleep(2500);
+			cout << "Congratulations! You have successfully collected all the vaccines!\nNow it is time to return to the Earth\nGood Bye!\n";
+			Sleep(3000);
+			system("cls");
 			reset_color();
 			main_menu();
 		} else if (vaccineCollected == final_level) {
