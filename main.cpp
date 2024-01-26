@@ -6,6 +6,7 @@
 #include <fstream>
 using namespace std;
 int saveVariable=0; // x=1 -> save , x=2 -> load
+int difficulty=1;
 int temp=0;
 int maxBullet = 3;
 int kill_counter=0;
@@ -167,10 +168,24 @@ void main_menu() {
 
 		case '2': // SETTINGS
 			cout << "Final level is: " << level_finish << endl;
-			cout << "1 - Sound settings\n2 - Final level settings\n3 - Back to menu\n"; 
+			cout << "1 - select difficulty\n2 - Sound settings\n3 - Final level settings\n4 - Back to menu\n"; 
 			cin >> order[0];
 			system("cls");
-			if (order[0] == '1'){
+			if(order[0]=='1') {
+				while(true) {
+					cout << "current difficulty: " << difficulty << "\n0 - exit\n1 - easy\n2 - medium\n3 - hard\n";
+					int x;
+					cin >> x;
+					system("cls");
+					if (x==1 or x==2 or x==3)
+						difficulty = x;
+					else if(x==0) {
+						main_menu();
+						break;
+					}
+				}
+			}
+			if (order[0] == '2'){
 			if (is_sound_on == false) {
 				cout << "Sound is mute!\nDo you want to unmute the sound? (y : YES | n : NO)\n";
 				cin >> order[0];
@@ -197,7 +212,7 @@ void main_menu() {
 				}
 			}
 		}
-		else if (order[0] == '2'){
+		else if (order[0] == '3'){
 			cout << "Choose final level :\n1 - 5 Levels (easy mode)\n2 - 10 Levels (medium mode)\n3 - 15 Levels (hard mode)\n4 - 20 Levels (pro mode)\n";
 			cin >> order[0];
 			system("cls");
@@ -231,7 +246,7 @@ void main_menu() {
 			}
 			
 		}
-		else if (order[0] == '3')
+		else if (order[0] == '4')
 		main_menu();
 
 			break;
@@ -361,18 +376,39 @@ void ingame_menu() {
 				break;
 
 			case '3':
-			cout << "Are you sure you want to exit the current game? (y : YES | n : NO)\n";
+			while(true) {
+				cout << "Do you want to save your game? (y:yes & n:no)" << endl;
 				cin >> order[0];
-				system("cls");
-				if (order[0] == 'y') {
-				main_menu();
+				if (order[0] == 'y' or order[0]=='Y') {
+					saveVariable=1;
+					save();
+					break;
 				}
-
-				if (order[0] == 'n') {
-				ingame_menu();
+				else if (order[0] == 'n' or order[0]=='N') 
+					break;
+				else {
+					cout << "Invalid input!";
+					Sleep(1000);
+					system("cls");
 				}
-
-				break;
+			}
+			while(true) {
+				cout << "Are you sure you want to exit the current game? (y : YES | n : NO)\n";
+				cin >> order[0];
+				if (order[0] == 'y' or order[0]=='Y') {
+					main_menu();
+					break;
+				}
+				else if (order[0] == 'n' or order[0]=='N') {
+					ingame_menu();
+					break;
+				}
+				else {
+					cout << "Invalid input!";
+					Sleep(1000);
+					system("cls");
+				}
+			}
 		return;
 	}
 }
@@ -488,7 +524,7 @@ void player_function(char x) {
 				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i-1][j]==3) {
-				kheshab+=2;
+				kheshab++;
 				arr[i-1][j]=1;
 				system("cls");
 				cout << "Ammo collected!";
@@ -674,8 +710,10 @@ void shot(char x) {
 }
 void zombi_Movment()
 {
+	if(order[0] != 'w' && order[0] != 'W' && order[0] != 'a' && order[0] != 'A' && order[0] != 's' && order[0] != 'S' && order[0] != 'd' && order[0] != 'D')
+		return;
 	zombieMoveCounter++;
-	if(zombieMoveCounter%2==0)
+	if(difficulty==3 or (zombieMoveCounter%2==0 && difficulty==2) or (zombieMoveCounter%3==0 && difficulty==1))
   {
 	int i,j,x;
 	for(int s=0;s<15;s++)
@@ -869,7 +907,7 @@ void reload(char x) {
 			Sleep(1000);
 		}
 		else {
-			tir++;
+			tir = maxBullet;
 			kheshab--;
 			cout << "Reloaded!";
 			Sleep(1000);
@@ -927,7 +965,7 @@ void save() {
 	if (saveVariable == 1) { //save
 		ofstream s("save.txt", ios::out);
 		s << final_level << endl << kill_counter << endl << health << endl << tir << endl << kheshab << endl << credit << endl;
-		s << range << endl <<  maxBullet << endl << vaccineCollected << endl;
+		s << range << endl <<  maxBullet << endl << vaccineCollected << endl << difficulty << endl;
 		for (int i=0 ; i<15 ; i++)
 			for (int j=0 ; j<15 ; j++) 
 				s << arr[i][j] << endl << back_up[i][j] << endl;
@@ -942,7 +980,7 @@ void save() {
 			Sleep(1500);
 			return;
 		}
-		l >> final_level >> kill_counter >> health >> tir >> kheshab >> credit >> range >> maxBullet >> vaccineCollected;
+		l >> final_level >> kill_counter >> health >> tir >> kheshab >> credit >> range >> maxBullet >> vaccineCollected >> difficulty;
 		for (int i=0 ; i<15 ; i++) 
 			for (int j=0 ; j<15 ; j++)
 				l >> arr[i][j] >> back_up[i][j];
@@ -953,10 +991,10 @@ void save() {
 void exit() {
 	if (order[0]=='e' or order[0]=='E') {
 		system("cls");
-		cout << "Do you want to save your game? (y:yes & n:no)" << endl;
 		while(true) {
+			cout << "Do you want to save your game? (y:yes & n:no)" << endl;
 			cin >> order[0];
-			if (order[0] == 'y' or 'Y') {
+			if (order[0] == 'y' or order[0]=='Y') {
 				saveVariable=1;
 				save();
 				main_menu();
