@@ -6,7 +6,7 @@
 #include <fstream>
 using namespace std;
 int saveVariable=0; // x=1 -> save , x=2 -> load
-int difficulty=1;
+int difficulty=2;
 int temp=0;
 int maxBullet = 3;
 int kill_counter=0;
@@ -167,7 +167,7 @@ void main_menu() {
 			break;
 
 		case '2': // SETTINGS
-			cout << "Final level is: " << level_finish << endl;
+			cout << "Final level is: " << level_finish << endl <<"Difficulty of game is: " << difficulty <<endl;
 			cout << "1 - select difficulty\n2 - Sound settings\n3 - Final level settings\n4 - Back to menu\n"; 
 			cin >> order[0];
 			system("cls");
@@ -338,7 +338,7 @@ void ingame_menu() {
 
 			case '2':
 
-		cout << "Final level is: " << level_finish << endl;
+		cout << "Final level is: " << level_finish << endl <<"Difficulty of game is: " << difficulty <<endl;
 				cout << "1 - Sound settings\n2 - Back to menu\n"; 
 				cin >> order[0];
 				system("cls");
@@ -348,11 +348,14 @@ void ingame_menu() {
 					cin >> order[0];
 					system("cls");
 					if (order[0] == 'n') {
+						order[0]='m';
 						return ingame_menu();
 					} else if (order[0] == 'y') {
 						is_sound_on = true;
+						order[0]='m';
 						return ingame_menu();
 					} else {
+						order[0]='m';
 						return ingame_menu();
 					}
 				} else if (is_sound_on == true) {
@@ -360,56 +363,67 @@ void ingame_menu() {
 					cin >> order[0];
 					system("cls");
 					if (order[0] == 'n') {
+						order[0]='m';
 						return ingame_menu();
 					} else if (order[0] == 'y') {
 						is_sound_on = false;
+						order[0]='m';
 						return ingame_menu();
 					} else {
+						order[0]='m';
 						return ingame_menu();
 					}
 				}
 			}
-			else if (order[0] == '2')
-			ingame_menu();
-			else ingame_menu();
+			else if (order[0] == '2'){
+				order[0]='m';
+		return ingame_menu();
+		}
+			else {
+				order[0]='m';
+		return ingame_menu();
 
+}
 				break;
 
 			case '3':
 			while(true) {
-				cout << "Do you want to save your game? (y:yes & n:no)" << endl;
+				cout << "Do you want to save your game? (y : YES | n : NO)" << endl;
 				cin >> order[0];
+				system("cls");
 				if (order[0] == 'y' or order[0]=='Y') {
 					saveVariable=1;
 					save();
-					break;
-				}
-				else if (order[0] == 'n' or order[0]=='N') 
-					break;
-				else {
-					cout << "Invalid input!";
+					cout << "Saved succefully!";
 					Sleep(1000);
 					system("cls");
+					main_menu();
+					break;
 				}
-			}
-			while(true) {
-				cout << "Are you sure you want to exit the current game? (y : YES | n : NO)\n";
+				else if (order[0] == 'n' or order[0]=='N'){
+				cout << "Are you sure you want to exit the current game without saving? (y : YES | n : NO)\n";
 				cin >> order[0];
+				system("cls");
 				if (order[0] == 'y' or order[0]=='Y') {
 					main_menu();
 					break;
 				}
 				else if (order[0] == 'n' or order[0]=='N') {
+					order[0]='m';
 					ingame_menu();
 					break;
 				}
+				system("cls"); 
+					break;
+				}
 				else {
+					system("cls");
 					cout << "Invalid input!";
 					Sleep(1000);
-					system("cls");
+					
 				}
-			}
-		return;
+				system("cls");
+			}	
 	}
 }
 }
@@ -548,7 +562,7 @@ void player_function(char x) {
 				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i+1][j]==3) {
-				kheshab+=2;
+				kheshab+=1;
 				arr[i+1][j]=1;
 				back_up[i+1][j]=0;
 				system("cls");
@@ -574,7 +588,7 @@ void player_function(char x) {
 				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i][j+1]==3) {
-				kheshab+=2;
+				kheshab+=1;
 				arr[i][j+1]=1;
 				back_up[i][j+1]=0;
 				system("cls");
@@ -600,7 +614,7 @@ void player_function(char x) {
 				cout << "Vaccine collected!"<<endl<<final_level + 1<<" credit gained!";
 		    	Sleep(1000);
 			} else if(arr[i][j-1]==3) {
-				kheshab+=2;
+				kheshab+=1;
 				arr[i][j-1]=1;
 				back_up[i][j-1]=0;
 				system("cls");
@@ -710,8 +724,6 @@ void shot(char x) {
 }
 void zombi_Movment()
 {
-	if(order[0] != 'w' && order[0] != 'W' && order[0] != 'a' && order[0] != 'A' && order[0] != 's' && order[0] != 'S' && order[0] != 'd' && order[0] != 'D')
-		return;
 	zombieMoveCounter++;
 	if(difficulty==3 or (zombieMoveCounter%2==0 && difficulty==2) or (zombieMoveCounter%3==0 && difficulty==1))
   {
@@ -992,17 +1004,30 @@ void exit() {
 	if (order[0]=='e' or order[0]=='E') {
 		system("cls");
 		while(true) {
-			cout << "Do you want to save your game? (y:yes & n:no)" << endl;
+			cout << "Do you want to save your game? (y : YES | n : NO)" << endl;
 			cin >> order[0];
+			system("cls");
 			if (order[0] == 'y' or order[0]=='Y') {
 				saveVariable=1;
 				save();
+				cout << "Saved succefully!";
+					Sleep(1000);
+					system("cls");
 				main_menu();
 				break;
 			}
 			else if (order[0] == 'n' or order[0]=='N') {
-				main_menu();
-				break;
+				cout << "Are you sure you want to exit the current game without saving? (y : YES | n : NO)\n";
+				cin >> order[0];
+				system("cls");
+				if (order[0] == 'y' or order[0]=='Y') {
+					main_menu();
+					break;
+				}
+				else if (order[0] == 'n' or order[0]=='N') {
+					
+					return;
+				}
 			}
 			else {
 				cout << "Invalid input!";
