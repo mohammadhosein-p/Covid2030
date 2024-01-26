@@ -3,7 +3,9 @@
 #include <windows.h>
 #include <time.h>
 #include <cstring>
+#include <fstream>
 using namespace std;
+int saveVariable=0; // x=1 -> save , x=2 -> load
 int temp=0;
 int maxBullet = 3;
 int kill_counter=0;
@@ -97,25 +99,14 @@ void upgrade(char);
 void reload(char);
 void levelFinish();
 void Accident();
+void save();
+void exit();
+void startingMenu();
 
 
 int main() {
 	srand(time(0));
-	red();
-	cout << " ######   #######  ##     ## #### ########      #######    #####     #######    #####\n";
-	cout << "##    ## ##     ## ##     ##  ##  ##     ##    ##     ##  ##    ##  ##     ##  ##    ##\n";
-	cout << "##       ##     ## ##     ##  ##  ##     ##           ## ##      ##        ## ##      ##\n";
-	cout << "##       ##     ## ##     ##  ##  ##     ##     #######  ##      ##  #######  ##      ##\n";
-	cout << "##       ##     ##  ##    ##  ##  ##     ##    ##        ##      ##        ## ##      ##\n";
-	cout << "##    ## ##     ##   ##  ##   ##  ##     ##    ##         ##    ##  ##     ##  ##    ##\n";
-	cout << " ######   #######     ###    #### ########     ########    #####     #######    #####\n";
-	reset_color();
-
-	cout << "Welcome to Covid 2030 game!\n";
-
-	main_menu();
-	system("cls");
-	print_play_ground();
+	startingMenu();
 
 	while(true) {
 		cin >> order[0];
@@ -128,19 +119,11 @@ int main() {
 		zombi_Movment();
 		death();
 		Accident();
-		if (order[0] == 'e' or order[0] == 'E') {
-			system("cls");
-			main_menu();
-
-		}	
-		if (order[0]=='m' or order[0]=='M') {
-			system("cls");
-			ingame_menu();
-		}
+		exit();
+		ingame_menu();
         system("cls");
 		print_play_ground();
 	}
-
 }
 
 
@@ -153,10 +136,20 @@ int main() {
 
 
 void main_menu() {
-	cout << "1 - New Game\t2 - Settings\t3 - Credits\t4 - Help\t5 - Exit\n";
+	cout << "0 - Load Game\t1 - New Game\t2 - Settings\t3 - Credits\t4 - Help\t5 - Exit\n";
 	cin >> order[0];
 	system("cls");
 	switch (order[0]) {
+		case '0' :
+			saveVariable=2;
+			save();
+			if(saveVariable == 3) {
+				system("cls");
+				main_menu();
+				return;
+			}
+			print_play_ground();
+			break;
 		case '1': // NEW GAME
 			final_level = 1;
 			credit = 0 ;
@@ -293,93 +286,95 @@ void main_menu() {
 }
 
 void ingame_menu() {
-	cout << "0 - Return to game\t1 - New Game\t2 - Settings\t3 - Exit\n";
-	cin >> order[0];
-	system("cls");
-	if ( order[0] != '0' && order[0]!= '1' && order[0]!= '2' && order[0]!='3') {
-		while (true) {
-			cout << "Please just enter the numbers in the menu:\n";
-			cin >> order[0];
-			system("cls");
-			if (order[0] == '0' || order[0]== '1' || order[0]== '2' || order[0]=='3' )
+	if (order[0] == 'm' or order[0]=='M') {
+		system("cls");
+		cout << "0 - Return to game\t1 - New Game\t2 - Settings\t3 - Exit\n";
+		cin >> order[0];
+		system("cls");
+		if ( order[0] != '0' && order[0]!= '1' && order[0]!= '2' && order[0]!='3') {
+			while (true) {
+				cout << "Please just enter the numbers in the menu:\n";
+				cin >> order[0];
+				system("cls");
+				if (order[0] == '0' || order[0]== '1' || order[0]== '2' || order[0]=='3' )
+					break;
+			}
+		}
+		switch (order[0]) {
+			case '0': //return
+				game_round--;
+				system("cls");
 				break;
-		}
+
+			case '1': // NEW GAME
+				final_level = 1;
+				credit = 0 ;
+				game_round = 0;
+				kill = 0;
+				vaccineCollected = 0;
+				tir=3;
+				kheshab=0;
+				health=3 ;
+				maxBullet = 3;
+				range=5;
+				start();
+				system("cls");
+				break;
+
+			case '2':
+
+		cout << "Final level is: " << level_finish << endl;
+				cout << "1 - Sound settings\n2 - Back to menu\n"; 
+				cin >> order[0];
+				system("cls");
+				if (order[0] == '1'){
+				if (is_sound_on == false) {
+					cout << "Sound is mute!\nDo you want to unmute the sound? (y : YES | n : NO)\n";
+					cin >> order[0];
+					system("cls");
+					if (order[0] == 'n') {
+						return ingame_menu();
+					} else if (order[0] == 'y') {
+						is_sound_on = true;
+						return ingame_menu();
+					} else {
+						return ingame_menu();
+					}
+				} else if (is_sound_on == true) {
+					cout << "Sound is not mute!!\nDo you want to mute the sound? (y : YES | n : NO)\n";
+					cin >> order[0];
+					system("cls");
+					if (order[0] == 'n') {
+						return ingame_menu();
+					} else if (order[0] == 'y') {
+						is_sound_on = false;
+						return ingame_menu();
+					} else {
+						return ingame_menu();
+					}
+				}
+			}
+			else if (order[0] == '2')
+			ingame_menu();
+			else ingame_menu();
+
+				break;
+
+			case '3':
+			cout << "Are you sure you want to exit the current game? (y : YES | n : NO)\n";
+				cin >> order[0];
+				system("cls");
+				if (order[0] == 'y') {
+				main_menu();
+				}
+
+				if (order[0] == 'n') {
+				ingame_menu();
+				}
+
+				break;
+		return;
 	}
-	switch (order[0]) {
-		case '0': //return
-			game_round--;
-			system("cls");
-			break;
-
-		case '1': // NEW GAME
-			final_level = 1;
-			credit = 0 ;
-			game_round = 0;
-			kill = 0;
-			vaccineCollected = 0;
-			tir=3;
-			kheshab=0;
-			health=3 ;
-			maxBullet = 3;
-			range=5;
-			start();
-			system("cls");
-			break;
-
-		case '2':
-
-	cout << "Final level is: " << level_finish << endl;
-			cout << "1 - Sound settings\n2 - Back to menu\n"; 
-			cin >> order[0];
-			system("cls");
-			if (order[0] == '1'){
-			if (is_sound_on == false) {
-				cout << "Sound is mute!\nDo you want to unmute the sound? (y : YES | n : NO)\n";
-				cin >> order[0];
-				system("cls");
-				if (order[0] == 'n') {
-					return ingame_menu();
-				} else if (order[0] == 'y') {
-					is_sound_on = true;
-					return ingame_menu();
-				} else {
-					return ingame_menu();
-				}
-			} else if (is_sound_on == true) {
-				cout << "Sound is not mute!!\nDo you want to mute the sound? (y : YES | n : NO)\n";
-				cin >> order[0];
-				system("cls");
-				if (order[0] == 'n') {
-					return ingame_menu();
-				} else if (order[0] == 'y') {
-					is_sound_on = false;
-					return ingame_menu();
-				} else {
-					return ingame_menu();
-				}
-			}
-		}
-		else if (order[0] == '2')
-		ingame_menu();
-		else ingame_menu();
-
-			break;
-
-		case '3':
-		cout << "Are you sure you want to exit the current game? (y : YES | n : NO)\n";
-			cin >> order[0];
-			system("cls");
-			if (order[0] == 'y') {
-			main_menu();
-			}
-
-			if (order[0] == 'n') {
-			 ingame_menu();
-			}
-
-			break;
-	return;
-
 }
 }
 
@@ -393,8 +388,10 @@ void start() {
 	arr[0][0] = 1;
 	arr[14][14]=2; // player num = 1 or 6, destination num = 2
 	for (int index = 0; index<final_level; index++) { //select zambie location
-		int i = rand()%12+3, j = rand()%12+3;
-		if (arr[i][j] == 0)
+		int i = rand()%15, j = rand()%15;
+		if(i>=0 && i<3 && j>=0 && j<3)
+			index--;
+		else if (arr[i][j] == 0)
 			arr[i][j] = 5; //zambie num = 5
 		else
 			index--;
@@ -924,4 +921,74 @@ void Accident()
 	   {
 	   	arr[i][j]=back_up[i][j];
 	   }
+}
+
+void save() {
+	if (saveVariable == 1) { //save
+		ofstream s("save.txt", ios::out);
+		s << final_level << endl << kill_counter << endl << health << endl << tir << endl << kheshab << endl << credit << endl;
+		s << range << endl <<  maxBullet << endl << vaccineCollected << endl;
+		for (int i=0 ; i<15 ; i++)
+			for (int j=0 ; j<15 ; j++) 
+				s << arr[i][j] << endl << back_up[i][j] << endl;
+		s.close();
+	}
+	else if (saveVariable == 2) { //load
+		ifstream l("save.txt" , ios::in);
+		if (!l) {
+			system("cls");
+			cout << "failed to load!";
+			saveVariable = 3;
+			Sleep(1500);
+			return;
+		}
+		l >> final_level >> kill_counter >> health >> tir >> kheshab >> credit >> range >> maxBullet >> vaccineCollected;
+		for (int i=0 ; i<15 ; i++) 
+			for (int j=0 ; j<15 ; j++)
+				l >> arr[i][j] >> back_up[i][j];
+		l.close();
+	}
+}
+
+void exit() {
+	if (order[0]=='e' or order[0]=='E') {
+		system("cls");
+		cout << "Do you want to save your game? (y:yes & n:no)" << endl;
+		while(true) {
+			cin >> order[0];
+			if (order[0] == 'y' or 'Y') {
+				saveVariable=1;
+				save();
+				main_menu();
+				break;
+			}
+			else if (order[0] == 'n' or order[0]=='N') {
+				main_menu();
+				break;
+			}
+			else {
+				cout << "Invalid input!";
+				Sleep(1000);
+				system("cls");
+			}
+		}
+	}
+}
+
+void startingMenu() {
+	red();
+	cout << " ######   #######  ##     ## #### ########      #######    #####     #######    #####\n";
+	cout << "##    ## ##     ## ##     ##  ##  ##     ##    ##     ##  ##    ##  ##     ##  ##    ##\n";
+	cout << "##       ##     ## ##     ##  ##  ##     ##           ## ##      ##        ## ##      ##\n";
+	cout << "##       ##     ## ##     ##  ##  ##     ##     #######  ##      ##  #######  ##      ##\n";
+	cout << "##       ##     ##  ##    ##  ##  ##     ##    ##        ##      ##        ## ##      ##\n";
+	cout << "##    ## ##     ##   ##  ##   ##  ##     ##    ##         ##    ##  ##     ##  ##    ##\n";
+	cout << " ######   #######     ###    #### ########     ########    #####     #######    #####\n";
+	reset_color();
+
+	cout << "Welcome to Covid 2030 game!\n";
+
+	main_menu();
+	system("cls");
+	print_play_ground();
 }
